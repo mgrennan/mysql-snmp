@@ -4,6 +4,7 @@
 # This program implements a SNMP agent for MySQL servers
 #
 # (c) Copryright 2008, 2009 - Brice Figureau
+# (c) Crapyright 2015 - Mark T. Grennan
 #
 # The INNODB parsing code is originally Copyright 2008 Baron Schwartz,
 # and was released as GPL,v2.
@@ -20,10 +21,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+# For Percona Variables see:
+# http://www.percona.com/doc/percona-server/5.5/ps-variables.html
 
 use strict;
 
-my $VERSION = "v1.2_01";
+my $VERSION = "v1.3_00";
 $VERSION = eval $VERSION;
 
 ## Packages ##
@@ -516,8 +520,24 @@ my @types = (
     'Counter64', 'Counter64', 'Counter64', 'Counter64',    # 145 - 148
     'Counter64', 'Counter64', 'String',    'Integer',      # 149 - 152
     'Integer',   'String',    'String',    'String',       # 153 - 156
-    'String',    'String',    'Counter64', 'Counter64'     # 157 - 160
-
+    'String',    'String',    'Counter64', 'Counter64',    # 157 - 160
+    'String',    'Integer',   'Counter64', 'Counter64',    # 161 - 164
+    'Integer',   'Integer',   'Integer',   'String',       # 165 - 168
+    'Integer',   'Integer',   'Integer',   'Counter32',    # 169 - 172
+    'Integer',   'Integer',   'Counter32', 'Integer',      # 173 - 176
+    'Counter64', 'String',    'Integer',   'Integer',      # 177 - 180
+    'Counter64', 'String',    'Integer',   'Integer',      # 181 - 184
+    'Integer',   'Counter32', 'Integer',   'Counter64',    # 185 - 188
+    'Counter32', 'Integer',   'Integer',   'Integer',      # 189 - 192
+    'Integer',   'Counter64', 'Counter32', 'Counter32',    # 193 - 196
+    'Counter32', 'String',    'Integer',   'Integer',      # 197 - 200
+    'Counter32', 'Integer',   'Integer',   'Integer',      # 201 - 204
+    'Integer',   'Integer',   'Integer',   'Integer',      # 205 - 208
+    'Integer',   'Integer',   'String',    'Integer',      # 209 - 212
+    'Integer',   'Integer',   'String',    'String',       # 213 - 216
+    'String',    'String',    'Integer',   'String',       # 217 - 220
+    'Integer',   'Integer',   'Integer',   'Integer',      # 221 - 224
+    'Integer',   'String',    'Counter32', 'Integer'       # 225 - 228
 );
 
 my @newkeys = (
@@ -600,8 +620,67 @@ my @newkeys = (
     'myWsrepClusterSize',         'myWsrepClusterStatus',        # 153 - 154
     'myWsrepReady',               'myWsrepConnected',            # 155 - 156
     'myWsrepLocalStateComment',   'myWsrepFlowControlPaused',    # 157 - 158
-    'myWsrepReplicatedBytes',     'myWsrepReceivedBytes'         # 159 - 160
-
+    'myWsrepReplicatedBytes',     'myWsrepReceivedBytes',        # 159 - 160
+    'myenforceStorageEngine',                                  	 # 161       - Percona list
+    'myexpandFastIndexCreation',                                 # 162
+    'myextramaxconnections',                                     # 163
+    'myextraport',                                               # 164
+    'myfastindexcreation',      'myhaveflashcache',              # 165- 166
+    'myhaveresponsetimedistribution',                            # 167
+    'myinnodbadaptiveflushingmethod',                            # 168 
+    'myinnodbadaptivehashindexpartitions',                       # 169
+    'myinnodbblockingbufferpoolrestore',                         # 170
+    'myinnodbbufferpoolpopulate',                                # 171
+    'myinnodbbufferpoolrestoreatstartup',                        # 172
+    'myinnodbbufferpoolshmchecksum',                             # 173
+    'myinnodbbufferpoolshmkey',                                  # 174
+    'myinnodbcheckpointagetarget',                               # 175
+    'myinnodbcorrupttableaction',                                # 176
+    'myinnodbdictsizelimit',   'myinnodbdoublewritefile',        # 177 - 178
+    'myinnodbfakechanges',      'myinnodbfastchecksum',          # 179 - 180
+    'myinnodbflushneighborpages',                                # 181
+    'myinnodbibufaccelrate',                                     # 182
+    'myinnodbibufactivecontract',                                # 183
+    'myinnodbibufmaxsize',                                       # 184 
+    'myinnodbimporttablefromxtrabackup',                         # 185
+    'myinnodbkillidletransaction',                               # 186
+    'myinnodblazydroptable',                                     # 187
+    'myinnodblockingfakechanges',                                # 188
+    'myinnodblogblocksize',                                      # 189
+    'myinnodbmaxbitmapfilesize',                                 # 190
+    'myinnodbmaxchangedpages',                                   # 191
+    'myinnodbmergesortblocksize',                                # 192
+    'myinnodbpagesize',         'myinnodbreadahead',             # 193 - 194
+    'myinnodbrecoverystats',                                     # 195
+    'myinnodbrecoveryupdaterelaylog',                            # 196
+    'myinnodbshowlocksheld',                                     # 197
+    'myinnodbshowverboselocks',                                  # 198
+    'myinnodbstatsautoupdate',                                   # 199
+    'myinnodbstatsupdateneedlock',                               # 200
+    'myinnodbthreadconcurrencytimerbased',                       # 201
+    'myinnodbtrackchangedpage',                                  # 202
+    'myinnodbuseatomicwrites',                                   # 203
+    'myinnodbuseglobalflushlogattrxcommit',                      # 204
+    'myinnodbusesysstatstable',                                  # 205
+    'mylogslowadminstatements',                                  # 206
+    'mylogslowfilter',          'mylogslowratelimit',            # 207
+    'mylogslowratetype',                                         # 208
+    'mylogslowslavestatements',                                  # 209
+    'mylogslowspstatements',   'mylogslowverbosity',             # 210 - 211
+    'mylogwarningssuppress',    'mymaxbinlogfiles',              # 212 - 213
+    'myoptimizerfix',                                            # 214
+    'myquerycachestripcomments',                                 # 215
+    'myqueryresponsetimerangebase',                              # 216
+    'myqueryresponsetimestats',                                  # 217
+    'myslowquerylogtimestampalways',                             # 218
+    'myslowquerylogtimestampprecision',                          # 219
+    'myslowqueryloguseglobalcontroli',                           # 220
+    'mythreadpoolhighpriotickets',                               # 221
+    'mythreadpoolidletimeout',                                   # 222
+    'mythreadpoolmaxthreads',                                    # 223
+    'mythreadpooloversubscribe',                                 # 224
+    'mythreadpoolsize',         'mythreadpoolstalllimit',        # 225 - 226
+    'mythreadstatistics',        'myuserstat'                    # 227 - 228
 );
 
 my @oldkeys = (
@@ -684,8 +763,67 @@ my @oldkeys = (
     'wsrep_cluster_size',         'wsrep_cluster_status',          # 153 - 154
     'wsrep_ready',                'wsrep_connected',               # 155 - 156
     'wsrep_local_state_comment',  'wsrep_flow_control_paused',     # 157 - 158
-    'wsrep_replicated_bytes',     'wsrep_received_bytes'           # 159 - 160
-
+    'wsrep_replicated_bytes',     'wsrep_received_bytes',          # 159 - 160
+    'myenforce_storage_engine',                                    # 161      - Percona list
+    'myexpand_fast_index_creation',                                # 162
+    'myextra_max_connections',                                     # 163
+    'myextra_port',                                                # 164
+    'myfast_index_creation',      'myhave_flashcache',             # 165 - 166
+    'myhave_response_time_distribution',                           # 167
+    'myinnodb_adaptive_flushing_method',                           # 168 
+    'myinnodb_adaptive_hash_index_partitions',                     # 169
+    'myinnodb_blocking_buffer_pool_restore',                       # 170
+    'myinnodb_buffer_pool_populate',                               # 171
+    'myinnodb_buffer_pool_restore_at_startup',                     # 172
+    'myinnodb_buffer_pool_shm_checksum',                           # 173
+    'myinnodb_buffer_pool_shm_key',                                # 174
+    'myinnodb_checkpoint_age_target',                              # 175
+    'myinnodb_corrupt_table_action',                               # 176
+    'myinnodb_dict_size_limit',   'myinnodb_doublewrite_file',     # 177 - 178
+    'myinnodb_fake_changes',      'myinnodb_fast_checksum',        # 179 - 180
+    'myinnodb_flush_neighbor_pages',                               # 181
+    'myinnodb_ibuf_accel_rate',                                    # 182
+    'myinnodb_ibuf_active_contract',                               # 183
+    'myinnodb_ibuf_max_size',                                      # 184 
+    'myinnodb_import_table_from_xtrabackup',                       # 185
+    'myinnodb_kill_idle_transaction',                              # 186
+    'myinnodb_lazy_drop_table',                                    # 187
+    'myinnodb_locking_fake_changes',                               # 188
+    'myinnodb_log_block_size',                                     # 189
+    'myinnodb_max_bitmap_file_size',                               # 190
+    'myinnodb_max_changed_pages',                                  # 191
+    'myinnodb_merge_sort_block_size',                              # 192
+    'myinnodb_page_size',         'myinnodb_read_ahead',           # 193 - 194
+    'myinnodb_recovery_stats',                                     # 195
+    'myinnodb_recovery_update_relay_log',                          # 196
+    'myinnodb_show_locks_held',                                    # 197
+    'myinnodb_show_verbose_locks',                                 # 198
+    'myinnodb_stats_auto_update',                                  # 199
+    'myinnodb_stats_update_need_lock',                             # 200
+    'myinnodb_thread_concurrency_timer_based',                     # 201
+    'myinnodb_track_changed_page',                                 # 202
+    'myinnodb_use_atomic_writes',                                  # 203
+    'myinnodb_use_global_flush_log_at_trx_commit',                 # 204
+    'myinnodb_use_sys_stats_table',                                # 205
+    'mylog_slow_admin_statements',                                 # 206
+    'mylog_slow_filter',          'mylog_slow_rate_limit',         # 207
+    'mylog_slow_rate_type',                                        # 208
+    'mylog_slow_slave_statements',                                 # 209
+    'mylog_slow_sp_statements',   'mylog_slow_verbosity',          # 210 - 211
+    'mylog_warnings_suppress',    'mymax_binlog_files',            # 212 - 213
+    'myoptimizer_fix',                                             # 214
+    'myquery_cache_strip_comments',                                # 215
+    'myquery_response_time_range_base',                            # 216
+    'myquery_response_time_stats',                                 # 217
+    'myslow_query_log_timestamp_always',                           # 218
+    'myslow_query_log_timestamp_precision',                        # 219
+    'myslow_query_log_use_global_controli',                        # 220
+    'mythread_pool_high_prio_tickets',                             # 221
+    'mythread_pool_idle_timeout',                                  # 222
+    'mythread_pool_max_threads',                                   # 223
+    'mythread_pool_oversubscribe',                                 # 224
+    'mythread_pool_size',         'mythread_pool_stall_limit',     # 225 - 226
+    'mythread_statistics',        'myuserstat'                     # 227 - 228
 );
 
 run() unless caller();
