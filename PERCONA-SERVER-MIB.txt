@@ -1,0 +1,2182 @@
+-- MySQL Server: SNMP Subagent
+-- 
+-- Copyright (C) 2008,2009 Brice Figureau
+-- Copyright (C) 2008-2012 Days of Wonder, Inc.
+-- Copyright (C) 2015 Weather Decision Technologies, Inc.
+--
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+-- 
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+-- 
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software
+-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+--
+
+PERCONA-SERVER-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE,
+    enterprises, Counter32, Gauge32, Counter64
+    FROM SNMPv2-SMI
+
+    TEXTUAL-CONVENTION
+    FROM SNMPv2-TC
+
+    MODULE-COMPLIANCE, OBJECT-GROUP
+    FROM SNMPv2-CONF;
+
+mySQL		MODULE-IDENTITY
+    LAST-UPDATED "201504140831Z"    -- April. 13, 2015
+    ORGANIZATION "Weather Decision Technologies, Inc."
+    CONTACT-INFO
+    "Weather Decision Technologies
+    Att. Mark Grennan
+    201 David L. Boren Blvd., Ste. 270
+    Norman, OK  73072
+    USA"
+    DESCRIPTION
+    "MIB for Percona MySQL"
+    
+    REVISION "201403110000Z"    -- Mar. 11, 2014
+    DESCRIPTION
+    "This MIB describes a MySQL Database Server counters."
+
+    REVISION "201403110000Z"	    -- Mar. 3, 2014
+    DESCRIPTION
+    "Added support for some wsrep/galera data"
+
+    REVISION "201211220000Z"	    -- Nov. 22, 2012
+    DESCRIPTION
+    "Removed errors and warnings."
+
+    REVISION "201108150000Z"	    -- Aug. 15, 2011
+    DESCRIPTION
+    "Added latest innodb values."
+
+    REVISION "200807140000Z"	    -- Jul. 14, 2008
+    DESCRIPTION
+    "The original version of this MIB."
+
+    ::= { enterprises daysofwonder(20267) 200 }
+
+-- Current MySQL core MIB entries
+
+MYSQLUnsigned64 ::= TEXTUAL-CONVENTION
+		DISPLAY-HINT "d"
+    STATUS  current
+    DESCRIPTION
+    "A 64 bits unsigned (which doesn't exist in SMIv2) containing any unsigned 64 bits
+    integer number. It is defined as a Counter64 but doesn't carry the counter semantic"
+    SYNTAX  Counter64
+
+percona		OBJECT IDENTIFIER ::= { mySQL 1 }
+
+KeyReadRequests OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "The number of requests to read a key block from the cache."
+    ::= { percona 1 }
+
+KeyReads OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "The number of physical reads of a key
+  	 block from disk."
+    ::= { percona 2 }
+
+KeyWriteRequests OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "The number of requests to write a key
+  	 block to the cache."
+    ::= { percona 3 }
+
+KeyWrites OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "The number of physical writes of a key
+  	 block to disk."
+    ::= { percona 4 }
+
+HistoryList OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB transaction history list length"
+    ::= { percona 5 }
+
+InnodbTransactions OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB transactions numbers"
+    ::= { percona 6 }
+
+ReadViews OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "read views open inside InnoDB"
+    ::= { percona 7 }
+
+CurrentTransactions OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb number of transactions at one time"
+    ::= { percona 8 }
+
+LockedTransactions OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb number of locked transactions at one time"
+    ::= { percona 9 }
+
+ActiveTransactions OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb number of active transactions at one time"
+    ::= { percona 10 }
+
+PoolSize OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Buffer Pool Size (pages)"
+    ::= { percona 11 }
+
+FreePages OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Free pages in Buffer Pool Size"
+    ::= { percona 12 }
+
+DatabasePages OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Page used for Database"
+    ::= { percona 13 }
+
+ModifiedPages OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pages modified in Buffer Pool"
+    ::= { percona 14 }
+
+PagesRead OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pages read"
+    ::= { percona 15 }
+
+PagesCreated OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pages created"
+    ::= { percona 16 }
+
+PagesWritten OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pages written"
+    ::= { percona 17 }
+
+FileFsyncs OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB fsyncs"
+    ::= { percona 18 }
+
+FileReads OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB fread"
+    ::= { percona 19 }
+
+FileWrites OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB fwrite"
+    ::= { percona 20 }
+
+LogWrites OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB log writes"
+    ::= { percona 21 }
+
+PendingAIOLogIOs OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Pending aio Log I/Os"
+    ::= { percona 22 }
+
+PendingAIOSyncIOs OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pending aio Sync I/Os"
+    ::= { percona 23 }
+
+PendingBufPoolFlushes OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pending Buffer Pool flushes"
+    ::= { percona 24 }
+
+PendingChkpWrites OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pending Checkpoint Writes"
+    ::= { percona 25 }
+
+PendingIbufAIOReads OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB pending Insert Buffer AIO Reads"
+    ::= { percona 26 }
+
+PendingLogFlushes OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Pending Log Flushes"
+    ::= { percona 27 }
+
+PendingLogWrites OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Pending Log Writes"
+    ::= { percona 28 }
+
+PendingNormalAIOReads OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Pending Normal AIO reads"
+    ::= { percona 29 }
+
+PendingNormalAIOWrites OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Pending Normal AIO writes"
+    ::= { percona 30 }
+
+IbufInserts OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb Insert Buffer inserts"
+    ::= { percona 31 }
+
+IbufMerged OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb Insert Buffer merged"
+    ::= { percona 32 }
+
+IbufMerges OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Insert Buffer merges"
+    ::= { percona 33 }
+
+SpinWaits OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Spin Waits"
+    ::= { percona 34 }
+
+SpinRounds OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Spin Rounds"
+    ::= { percona 35 }
+
+OsWaits OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB OS Waits"
+    ::= { percona 36 }
+
+RowsInserted OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Inserted"
+    ::= { percona 37 }
+
+RowsUpdated OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Updated"
+    ::= { percona 38 }
+
+RowsDeleted OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Deleted"
+    ::= { percona 39 }
+
+RowsRead OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Read"
+    ::= { percona 40 }
+
+TableLocksWaited OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Table Locks Waited"
+    ::= { percona 41 }
+
+TableLocksImmediate OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Table Locks Immediate"
+    ::= { percona 42 }
+
+SlowQueries OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Slow Queries"
+    ::= { percona 43 }
+
+OpenFiles OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Open Files"
+    ::= { percona 44 }
+
+OpenTables OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Open Tables"
+    ::= { percona 45 }
+
+OpenedTables OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Tables opened"
+    ::= { percona 46 }
+
+InnodbOpenFiles OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB open files"
+    ::= { percona 47 }
+
+OpenFilesLimit OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB open files limit"
+    ::= { percona 48 }
+
+TableCache OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Table Cache"
+    ::= { percona 49 }
+
+AbortedClients OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Aborted Clients"
+    ::= { percona 50 }
+
+AbortedConnects OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Aborted Connects"
+    ::= { percona 51 }
+
+MaxUsedConnections OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Max Used Connections"
+    ::= { percona 52 }
+
+SlowLaunchThreads OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"The number of threads that have taken
+  	 more than slow_launch_time seconds to
+  	 create."
+    ::= { percona 53 }
+
+ThreadsCached OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"The number of threads in the thread
+  	 cache."
+    ::= { percona 54 }
+
+ThreadsConnected OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"The number of currently open
+  	 connections."
+    ::= { percona 55 }
+
+ThreadsCreated OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"The number of threads created to
+  	 handle connections."
+    ::= { percona 56 }
+
+ThreadsRunning OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"The number of threads that are
+  	 not sleeping."
+    ::= { percona 57 }
+
+MaxConnections OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of maximal clients connected"
+    ::= { percona 58 }
+
+ThreadCacheSize OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+  	"How many threads the server should cache for
+  	 reuse."
+    ::= { percona 59 }
+
+CurrentConnections OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of clients connected"
+    ::= { percona 60 }
+
+SlaveRunning OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of slaves connected"
+    ::= { percona 61 }
+
+SlaveStopped OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of slaves stopped"
+    ::= { percona 62 }
+
+SlaveRetriedTransactions OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of transaction retried by slaves"
+    ::= { percona 63 }
+
+SlaveLag OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Global slave time lag"
+    ::= { percona 64 }
+
+SlaveOpenTempTables OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of temporary tables opened by slave"
+    ::= { percona 65 }
+
+QcacheFreeBlocks OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Query Cache free blocks"
+    ::= { percona 66 }
+
+QcacheFreeMemory OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Query cache free memory"
+    ::= { percona 67 }
+
+QcacheHits OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of Query cache hit"
+    ::= { percona 68 }
+
+QcacheInserts OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of Query Cache Inserts"
+    ::= { percona 69 }
+
+QcacheLowmemPrunes OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of Query Cache prunes for Low mem situation"
+    ::= { percona 70 }
+
+QcacheNotCached OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of query not cached"
+    ::= { percona 71 }
+
+QcacheQueriesInCache OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of Queries cached in Query cache"
+    ::= { percona 72 }
+
+QcacheTotalBlocks OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of blocks in Query Cache"
+    ::= { percona 73 }
+
+QueryCacheSize OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Query cache size"
+    ::= { percona 74 }
+
+Questions OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of clients requests"
+    ::= { percona 75 }
+
+ComUpdate OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of update query"
+    ::= { percona 76 }
+
+ComInsert OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert queries"
+    ::= { percona 77 }
+
+ComSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select queries"
+    ::= { percona 78 }
+
+ComDelete OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of delete queries"
+    ::= { percona 79 }
+
+ComReplace OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of replace queries"
+    ::= { percona 80 }
+
+ComLoad OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of load queries"
+    ::= { percona 81 }
+
+ComUpdateMulti OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of update-multi queries"
+    ::= { percona 82 }
+
+ComInsertSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert...select queries"
+    ::= { percona 83 }
+
+ComDeleteMulti OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of delete-multi queries"
+    ::= { percona 84 }
+
+ComReplaceSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of replace..select queries"
+    ::= { percona 85 }
+
+SelectFullJoin OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select full join queries"
+    ::= { percona 86 }
+
+SelectFullRangeJoin OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select full range queries"
+    ::= { percona 87 }
+
+SelectRange OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select range"
+    ::= { percona 88 }
+
+SelectRangeCheck OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select ranche check"
+    ::= { percona 89 }
+
+SelectScan OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select scan"
+    ::= { percona 90 }
+
+SortMergePasses OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of passes for filesorts"
+    ::= { percona 91 }
+
+SortRange OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorts done by range"
+    ::= { percona 92 }
+
+SortRows OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorted rows"
+    ::= { percona 93 }
+
+SortScan OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorts done by table scan"
+    ::= { percona 94 }
+
+CreatedTmpTables OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp tables created"
+    ::= { percona 95 }
+
+CreatedTmpDiskTables OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp disk tables created"
+    ::= { percona 96 }
+
+CreatedTmpFiles OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp files created"
+    ::= { percona 97 }
+
+BytesSent OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes sent"
+    ::= { percona 98 }
+
+BytesReceived OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes received"
+    ::= { percona 99 }
+
+InnodbLogBufferSize OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB log buffer size"
+    ::= { percona 100 }
+
+UnflushedLog OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB unflushed log"
+    ::= { percona 101 }
+
+LogBytesFlushed OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Logs bytes flushed to disk"
+    ::= { percona 102 }
+
+LogBytesWritten OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB logs bytes written"
+    ::= { percona 103 }
+
+RelayLogSpace OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Relay log free space"
+    ::= { percona 104 }
+
+BinlogCacheSize OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Binlog cache size"
+    ::= { percona 105 }
+
+BinlogCacheDiskUse OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Binlog cache disk use"
+    ::= { percona 106 }
+
+BinlogCacheUse OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Binlog cache use"
+    ::= { percona 107 }
+
+BinaryLogSpace OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Total size of all binlogs"
+    ::= { percona 108 }
+
+StateClosingTables OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in closing state"
+    ::= { percona 109 }
+
+StateCopyingToTmpTable OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in copying to tmp table state"
+    ::= { percona 110 }
+
+StateEnd OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in end state"
+    ::= { percona 111 }
+
+StateFreeingItems OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in freeing items state"
+    ::= { percona 112 }
+
+StateInit OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in init state"
+    ::= { percona 113 }
+
+StateLocked OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in locked state"
+    ::= { percona 114 }
+
+StateLogin OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in login state"
+    ::= { percona 115 }
+
+StatePreparing OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in preparing state"
+    ::= { percona 116 }
+
+StateReadingFromNet OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in reading from net state"
+    ::= { percona 117 }
+
+StateSendingData OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in sending data state"
+    ::= { percona 118 }
+
+StateSortingResult OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in sorting result state"
+    ::= { percona 119 }
+
+StateStatistics OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in statistics state"
+    ::= { percona 120 }
+
+StateUpdating OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in updating state"
+    ::= { percona 121 }
+
+StateWritingToNet OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in writing to net state"
+    ::= { percona 122 }
+
+StateNone OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in none state"
+    ::= { percona 123 }
+
+StateOther OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of requests in other state"
+    ::= { percona 124 }
+
+AdditionalPoolAlloc OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes allocated in the additional pool"
+    ::= { percona 125 }
+
+TotalMemAlloc OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes allocated by MySQL"
+    ::= { percona 126 }
+
+HashIndexCellsTotal OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 127 }
+
+HashIndexCellsUsed OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 128 }
+
+InnoDBLockStructs OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 129 }
+
+InnoDBLockWaitSecs OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 130 }
+
+InnoDBTablesInUse OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of innodb tables in use"
+    ::= { percona 131 }
+
+InnoDBLockedTables OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of locked tables by the innodb subsystem"
+    ::= { percona 132 }
+
+UncheckpointedBytes OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of not yet checkpointed bytes"
+    ::= { percona 133 }
+
+IBufCellCount OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert buffer cells"
+    ::= { percona 134 }
+
+IBufUsedCells OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert buffer used cells"
+    ::= { percona 135 }
+
+IBufFreeCells OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert buffer free cells"
+    ::= { percona 136 }
+
+AdaptiveHashMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB hash memory used"
+    ::= { percona 137 }
+
+PageHashMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB page hash memory used"
+    ::= { percona 138 }
+
+DictionaryCacheMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB dictionary cache memory used"
+    ::= { percona 139 }
+
+FileSystemMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB file system memory used"
+    ::= { percona 140 }
+
+LockSystemMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB lock system memory used"
+    ::= { percona 141 }
+
+RecoverySystemMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB recovery system memory used"
+    ::= { percona 142 }
+
+ThreadHashMemory OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB thread hash memory used"
+    ::= { percona 143 }
+
+InnoDBSemWaits OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of time innodb waited for semaphores"
+    ::= { percona 144 }
+
+InooDBSemWaitTime OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Total time innodb waited for semaphores"
+    ::= { percona 145 }
+
+KeyBufBytesUnflushed OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Key Buffer bytes still unflushed"
+    ::= { percona 146 }
+
+KeyBufBytesUsed OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Key Buffer used in bytes"
+    ::= { percona 147 }
+
+KeyBufferSize OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Size of the Key Buffer"
+    ::= { percona 148 }
+
+InnoDBRowLockTime OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Total time (ms) spent in acquiring row locks"
+    ::= { percona 149 }
+
+InnoDBRowLockWaits OBJECT-TYPE
+    SYNTAX	MYSQLUnsigned64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "The number of times a row lock had to be waited for"
+    ::= { percona 150 }
+
+WsrepClusterStateUuid OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "UUID for the cluster"
+    ::= { percona 151 }
+
+WsrepClusterConfId OBJECT-TYPE
+    SYNTAX	INTEGER
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "wsrep conf id for the cluster"
+    ::= { percona 152 }
+
+WsrepClusterSize OBJECT-TYPE
+    SYNTAX	INTEGER
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of online nodes in the cluster"
+    ::= { percona 153 }
+
+WsrepClusterStatus OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Cluster status"
+    ::= { percona 154 }
+
+WsrepReady OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Node can accept SQL load"
+    ::= { percona 155 }
+
+WsrepConnected OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Cluster connection status"
+    ::= { percona 156 }
+
+WsrepLocalStateComment OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Description of local state"
+    ::= { percona 157 }
+
+WsrepFlowControlPaused OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "indicates the fraction of time replication was paused since last SHOW
+    STATUS"
+    ::= { percona 158 }
+
+WsrepReplicatedBytes OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes replicated"
+    ::= { percona 159 }
+
+WsrepReceivedBytes OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of wsrep bytes received"
+    ::= { percona 160 }
+
+EnforceStorageEngine OBJECT-TYPE
+    SYNTAX	OCTET STRING
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Enforce Storage Engine"
+    ::= { percona 161 }
+
+ExpandFastIndexCreation OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "Enforce Storage Engine"
+    ::= { percona 162 }
+
+extramaxconnections OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "The maximum allowed number of connections on the extra port"
+    ::= { percona 163 }
+
+extraport OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "The additional port Percona Server will listen on"
+    ::= { percona 164 }
+
+fastindexcreation OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "Disables fast index creation"
+    ::= { percona 165 }
+
+haveflashcache OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "System has SDD or FLASH cache drives."
+    ::= { percona 166 }
+
+haveresponsetimedistribution OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "indicates whether or not it is implemented in the server you are running"
+    ::= { percona 167 }
+
+innodbadaptiveflushingmethod OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 168 }
+
+innodbadaptivehashindexpartitions OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 169 }
+
+innodbblockingbufferpoolrestore OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 170 }
+
+innodbbufferpoolpopulate OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 171 }
+
+innodbbufferpoolrestoreatstartup OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 172 }
+
+innodbbufferpoolshmchecksum  OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 173 }
+
+innodbbufferpoolshmkey OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 174 }
+
+innodbcheckpointagetarget OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 175 }
+
+innodbcorrupttableaction OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 176 }
+
+innodbdictsizelimit OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 177 }
+
+innodbdoublewritefile OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 178 }
+
+innodbfakechanges OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 179 }
+
+innodbfastchecksum OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 180 }
+
+innodbflushneighborpages OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 181 }
+
+innodbibufaccelrate OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 182 }
+
+innodbibufactivecontract OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 183 }
+
+innodbibufmaxsize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 184 }
+
+innodbimporttablefromxtrabackup OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 185 }
+
+innodbkillidletransaction OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 186 }
+
+innodblazydroptable OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 187 }
+
+innodblockingfakechanges OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 188 }
+
+innodblogblocksize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 189 }
+
+innodbmaxbitmapfilesize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 190 }
+
+innodbmaxchangedpages OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 191 }
+
+innodbmergesortblocksize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 192 }
+
+innodbpagesize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 193 }
+
+innodbreadahead OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 194 }
+
+innodbrecoverystats OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 195 }
+
+innodbrecoveryupdaterelaylog OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 196 }
+
+innodbshowlocksheld OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 197 }
+
+innodbshowverboselocks OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 198 }
+
+innodbstatsautoupdate OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 199 }
+
+innodbstatsupdateneedlock OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 200 }
+
+innodbthreadconcurrencytimerbased OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 201 }
+
+innodbtrackchangedpage OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 202 }
+
+innodbuseatomicwrites OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 203 }
+
+innodbuseglobalflushlogattrxcommit OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 204 }
+
+innodbusesysstatstable OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 205 }
+
+logslowadminstatements OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 206 }
+
+logslowfilter OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 207 }
+
+logslowratelimit OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 208 }
+
+logslowratetype OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 209 }
+
+logslowslavestatements OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 210 }
+
+logslowspstatements OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 211 }
+
+logslowverbosity OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 212 }
+
+logwarningssuppress OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 213 }
+
+maxbinlogfiles OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 214 }
+
+optimizerfix OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 215 }
+
+querycachestripcomments OBJECT-TYPE
+    SYNTAX      STRING
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 216 }
+
+queryresponsetimerangebase OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 217 }
+
+queryresponsetimestats OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 218 }
+
+slowquerylogtimestampalways OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 219 }
+
+slowquerylogtimestampprecision OBJECT-TYPE
+    SYNTAX      STRING
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 220 }
+
+slowqueryloguseglobalcontroli OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 221 }
+
+threadpoolhighpriotickets OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 222 }
+
+threadpoolidletimeout OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 223 }
+
+threadpoolmaxthreads OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 224 }
+
+threadpooloversubscribe OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 225 }
+
+threadpoolsize OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 226 }
+
+threadpoolstalllimit OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 227 }
+
+threadstatistics OBJECT-TYPE
+    SYNTAX      INTEGER
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 228 }
+
+userstat OBJECT-TYPE
+    SYNTAX      STRING
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "TBD"
+    ::= { percona 229 }
+
+-- conformance information
+
+mySQLMIBConformance OBJECT IDENTIFIER ::= { mySQL 2 }
+
+mySQLMIBCompliances OBJECT IDENTIFIER ::= { mySQLMIBConformance 1 }
+mySQLMIBGroups      OBJECT IDENTIFIER ::= { mySQLMIBConformance 2 }
+
+-- compliance statements
+
+mySQLMIBCompliance MODULE-COMPLIANCE
+    STATUS  current
+    DESCRIPTION
+    "The compliance statement for SNMPv2 entities which implement MYSQL."
+    MODULE  -- this module
+    MANDATORY-GROUPS { mySQLGroup }
+    ::= { mySQLMIBCompliances 1 }
+
+-- units of conformance
+
+mySQLGroup OBJECT-GROUP
+    OBJECTS   { 
+			KeyReadRequests,
+			KeyReads,
+			KeyWriteRequests,
+			KeyWrites,
+			HistoryList,
+			InnodbTransactions,
+			ReadViews,
+			CurrentTransactions,
+			LockedTransactions,
+			ActiveTransactions,
+			PoolSize,
+			FreePages,
+			DatabasePages,
+			ModifiedPages,
+			PagesRead,
+			PagesCreated,
+			PagesWritten,
+			FileFsyncs,
+			FileReads,
+			FileWrites,
+			LogWrites,
+			PendingAIOLogIOs,
+			PendingAIOSyncIOs,
+			PendingBufPoolFlushes,
+			PendingChkpWrites,
+			PendingIbufAIOReads,
+			PendingLogFlushes,
+			PendingLogWrites,
+			PendingNormalAIOReads,
+			PendingNormalAIOWrites,
+			IbufInserts,
+			IbufMerged,
+			IbufMerges,
+			SpinWaits,
+			SpinRounds,
+			OsWaits,
+			RowsInserted,
+			RowsUpdated,
+			RowsDeleted,
+			RowsRead,
+			TableLocksWaited,
+			TableLocksImmediate,
+			SlowQueries,
+			OpenFiles,
+			OpenTables,
+			OpenedTables,
+			InnodbOpenFiles,
+			OpenFilesLimit,
+			TableCache,
+			AbortedClients,
+			AbortedConnects,
+			MaxUsedConnections,
+			SlowLaunchThreads,
+			ThreadsCached,
+			ThreadsConnected,
+			ThreadsCreated,
+			ThreadsRunning,
+			MaxConnections,
+			ThreadCacheSize,
+			CurrentConnections,
+			SlaveRunning,
+			SlaveStopped,
+			SlaveRetriedTransactions,
+			SlaveLag,
+			SlaveOpenTempTables,
+			QcacheFreeBlocks,
+			QcacheFreeMemory,
+			QcacheHits,
+			QcacheInserts,
+			QcacheLowmemPrunes,
+			QcacheNotCached,
+			QcacheQueriesInCache,
+			QcacheTotalBlocks,
+			QueryCacheSize,
+			Questions,
+			ComUpdate,
+			ComInsert,
+			ComSelect,
+			ComDelete,
+			ComReplace,
+			ComLoad,
+			ComUpdateMulti,
+			ComInsertSelect,
+			ComDeleteMulti,
+			ComReplaceSelect,
+			SelectFullJoin,
+			SelectFullRangeJoin,
+			SelectRange,
+			SelectRangeCheck,
+			SelectScan,
+			SortMergePasses,
+			SortRange,
+			SortRows,
+			SortScan,
+			CreatedTmpTables,
+			CreatedTmpDiskTables,
+			CreatedTmpFiles,
+			BytesSent,
+			BytesReceived,
+			InnodbLogBufferSize,
+			UnflushedLog,
+			LogBytesFlushed,
+			LogBytesWritten,
+			RelayLogSpace,
+			BinlogCacheSize,
+			BinlogCacheDiskUse,
+			BinlogCacheUse,
+			BinaryLogSpace,
+			StateClosingTables,
+			StateCopyingToTmpTable,
+			StateEnd,
+			StateFreeingItems,
+			StateInit,
+			StateLocked,
+			StateLogin,
+			StatePreparing,
+			StateReadingFromNet,
+			StateSendingData,
+			StateSortingResult,
+			StateStatistics,
+			StateUpdating,
+			StateWritingToNet,
+			StateNone,
+			StateOther,
+			AdditionalPoolAlloc,
+			TotalMemAlloc,
+			HashIndexCellsTotal,
+			HashIndexCellsUsed,
+			InnoDBLockStructs,
+			InnoDBLockWaitSecs,
+			InnoDBTablesInUse,
+			InnoDBLockedTables,
+			UncheckpointedBytes,
+			IBufCellCount,
+			IBufUsedCells,
+			IBufFreeCells,
+			AdaptiveHashMemory,
+			PageHashMemory,
+			DictionaryCacheMemory,
+			FileSystemMemory,
+			LockSystemMemory,
+			RecoverySystemMemory,
+			ThreadHashMemory,
+			InnoDBSemWaits,
+			InooDBSemWaitTime,
+			KeyBufBytesUnflushed,
+			KeyBufBytesUsed,
+			KeyBufferSize,
+			InnoDBRowLockTime,
+			InnoDBRowLockWaits,
+            WsrepClusterStateUuid,
+            WsrepClusterConfId,
+            WsrepClusterSize,
+            WsrepClusterStatus,
+            WsrepReady,
+            WsrepConnected,
+            WsrepLocalStateComment,
+            WsrepFlowControlPaused,
+            WsrepReplicatedBytes,
+            WsrepReceivedBytes,
+	EnforceStorageEngine,
+	ExpandFastIndexCreation,
+	extramaxconnections,
+	extraport,
+	fastindexcreation,
+	haveflashcache,
+	haveresponsetimedistribution,
+	innodbadaptiveflushingmethod,
+	innodbadaptivehashindexpartitions,
+	innodbblockingbufferpoolrestore,
+	innodbbufferpoolpopulate,
+	innodbbufferpoolrestoreatstartup,
+	innodbbufferpoolshmchecksum,
+	innodbbufferpoolshmkey,
+	innodbcheckpointagetarget,
+	innodbcorrupttableaction,
+	innodbdictsizelimit,
+	innodbdoublewritefile,
+	innodbfakechanges,
+	innodbfastchecksum,
+	innodbflushneighborpages,
+	innodbibufaccelrate,
+	innodbibufactivecontract,
+	innodbibufmaxsize,
+	innodbimporttablefromxtrabackup,
+	innodbkillidletransaction,
+	innodblazydroptable,
+	innodblockingfakechanges,
+	innodblogblocksize,
+	innodbmaxbitmapfilesize,
+	innodbmaxchangedpages,
+	innodbmergesortblocksize,
+	innodbpagesize,
+	innodbreadahead,
+	innodbrecoverystats,
+	innodbrecoveryupdaterelaylog,
+	innodbshowlocksheld,
+	innodbshowverboselocks,
+	innodbstatsautoupdate,
+	innodbstatsupdateneedlock,
+	innodbthreadconcurrencytimerbased,
+	innodbtrackchangedpage,
+	innodbuseatomicwrites,
+	innodbuseglobalflushlogattrxcommit,
+	innodbusesysstatstable,
+	logslowadminstatements,
+	logslowfilter,
+	logslowratelimit,
+	logslowratetype,
+	logslowslavestatements,
+	logslowspstatements,
+	logslowverbosity,
+	logwarningssuppress,
+	maxbinlogfiles,
+	optimizerfix,
+	querycachestripcomments,
+	queryresponsetimerangebase,
+	queryresponsetimestats,
+	slowquerylogtimestampalways,
+	slowquerylogtimestampprecision,
+	slowqueryloguseglobalcontroli,
+	threadpoolhighpriotickets,
+	threadpoolidletimeout,
+	threadpoolmaxthreads,
+	threadpooloversubscribe,
+	threadpoolsize,
+	threadpoolstalllimit,
+	threadstatistics,
+	userstat
+
+}
+    STATUS    current
+    DESCRIPTION
+     "The group of objects providing for management of MYSQL entities."
+    ::= { mySQLMIBGroups 1 }
+
+
+END

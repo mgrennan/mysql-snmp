@@ -1,5 +1,5 @@
 Name:           mysql-snmp
-Version:        1.2
+Version:        1.3rc2
 Release:        1%{?dist}
 Summary:        SNMP monitoring agent for MySQL
 
@@ -13,6 +13,7 @@ BuildArch:      noarch
 Requires:       perl(DBI), perl(DBD::mysql) >= 1.0, perl(Unix::Syslog)
 Requires:       perl(SNMP), perl(NetSNMP::OID), perl(NetSNMP::agent), perl(NetSNMP::ASN)
 Requires:       perl(NetSNMP::agent::default_store), perl(NetSNMP::default_store)
+Requires:       perl(Math::BigInt::GMP)
 Requires:       net-snmp >= 5.4.3
 Obsoletes:      mysql-agent
 
@@ -35,9 +36,9 @@ install -c -m 755 mysql-snmp ${RPM_BUILD_ROOT}%{_sbindir}
 install -c -m 755 redhat/mysql-snmp.init ${RPM_BUILD_ROOT}%{_initrddir}/%{name}
 install -c -m 644 redhat/mysql-snmp.sysconfig ${RPM_BUILD_ROOT}%{_sysconfdir}/sysconfig/%{name}
 install -c -m 600 my.cnf ${RPM_BUILD_ROOT}%{_sysconfdir}/snmp
-install -c -m 644 mysql-snmp.1 ${RPM_BUILD_ROOT}%{_mandir}/man1
-gzip ${RPM_BUILD_ROOT}%{_mandir}/man1/mysql-snmp.1 
-install -m 644 MYSQL-SERVER-MIB.txt ${RPM_BUILD_ROOT}%{_datadir}/snmp/mibs
+install -c -m 644 mysql-snmp ${RPM_BUILD_ROOT}%{_mandir}/man1
+gzip ${RPM_BUILD_ROOT}%{_mandir}/man1/mysql-snmp 
+install -m 644 PERCONA-SERVER-MIB.txt ${RPM_BUILD_ROOT}%{_datadir}/snmp/mibs
 
 %clean
 
@@ -48,23 +49,27 @@ install -m 644 MYSQL-SERVER-MIB.txt ${RPM_BUILD_ROOT}%{_datadir}/snmp/mibs
 %{_sbindir}/*
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/snmp/my.cnf
-%doc %{_mandir}/man1/*.1*
+%doc %{_mandir}/man1/*
 %{_initrddir}/*
 %{_datadir}/snmp/mibs/*
 
 %changelog
-* Wed Feb 17 2011 Brice Figureau <brice+debian@daysofwonder.com> - 1.2
-v1.2 release
+* Wed Apr 15 2015 Mark Grennan <mark@grennan.com> - 1.3rc2
+- Percona release v1.3rc2
+* Tue Apr 14 2015 Mark Grennan <mark@grennan.com> - 1.3rc1
+- Percona release v1.3rc1
+* Thu Feb 17 2011 Brice Figureau <brice+debian@daysofwonder.com> - 1.2
+- v1.2 release
 * Wed Feb 17 2010 Robin Bowes <rpmbuild@yo61.net> - 1.0
-v1.0 release
+- v1.0 release
 * Mon Nov 16 2009 Robin Bowes <rpmbuild@yo61.net> - 1.0rc2-1
-Bump to rc2 version
+- Bump to rc2 version
 * Sat Oct 31 2009 Brice Figureau <brice@daysofwonder.com> - 1.0rc1-1
-New version
+- New version
 * Sat Oct 24 2009 Brice Figureau <brice@daysofwonder.com> - 0.8-1
-New version
-Manpage compression in the spec
+- New version
+- Manpage compression in the spec
 * Mon Sep 28 2009 Robin Bowes <rpmbuild@yo61.net> - 0.7-2
-Add opennms config files to package
+- Add opennms config files to package
 * Mon Sep 28 2009 Robin Bowes <rpmbuild@yo61.net> - 0.7-1
-Initial RPM packaging
+- Initial RPM packaging
