@@ -1426,7 +1426,7 @@ haveresponsetimedistribution OBJECT-TYPE
     ::= { percona 167 }
 
 innodbadaptiveflushingmethod OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      STRING
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1506,7 +1506,7 @@ innodbdictsizelimit OBJECT-TYPE
     ::= { percona 177 }
 
 innodbdoublewritefile OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      STRING
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1770,7 +1770,7 @@ logslowslavestatements OBJECT-TYPE
     ::= { percona 210 }
 
 logslowspstatements OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      STRING
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1802,7 +1802,7 @@ maxbinlogfiles OBJECT-TYPE
     ::= { percona 214 }
 
 optimizerfix OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      STRING
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
@@ -1818,7 +1818,7 @@ querycachestripcomments OBJECT-TYPE
     ::= { percona 216 }
 
 queryresponsetimerangebase OBJECT-TYPE
-    SYNTAX      INTEGER
+    SYNTAX      STRING
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION

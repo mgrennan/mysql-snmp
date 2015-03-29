@@ -27,7 +27,7 @@
 
 use strict;
 
-my $VERSION = "v1.3rc2";
+my $VERSION = "v1.3rc3";
 #$VERSION = eval $VERSION;
 
 my $DEBUG = 1;
