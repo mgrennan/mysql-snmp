@@ -1,0 +1,485 @@
+-- MySQL Server: SNMP Subagent
+-- 
+-- Copyright (C) 2008,2009 Brice Figureau
+-- Copyright (C) 2008-2012 Days of Wonder, Inc.
+-- Copyright (C) 2015 Weather Decision Technologies, Inc.
+--
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License
+-- as published by the Free Software Foundation; either version 2
+-- of the License, or (at your option) any later version.
+-- 
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+-- 
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software
+-- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+--
+
+PERCONA-SERVER-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE,
+    enterprises, Counter32, Gauge32, Counter64
+    FROM SNMPv2-SMI
+
+    TEXTUAL-CONVENTION
+    FROM SNMPv2-TC
+
+    MODULE-COMPLIANCE, OBJECT-GROUP
+    FROM SNMPv2-CONF;
+
+mySQL		MODULE-IDENTITY
+    LAST-UPDATED "201506041802Z"    -- June. 04, 2015
+    ORGANIZATION "Weather Decision Technologies, Inc."
+    CONTACT-INFO
+    "Weather Decision Technologies
+    Att. Mark Grennan
+    201 David L. Boren Blvd., Ste. 270
+    Norman, OK  73072
+    USA"
+    DESCRIPTION
+    "MIB for PRTG MySQL"
+    
+    ::= { enterprises daysofwonder(20267) 200 }
+
+-- Current MySQL core MIB entries
+
+MYSQLUnsigned64 ::= TEXTUAL-CONVENTION
+		DISPLAY-HINT "d"
+    STATUS  current
+    DESCRIPTION
+    "A 64 bits unsigned (which doesn't exist in SMIv2) containing any unsigned 64 bits
+    integer number. It is defined as a Counter64 but doesn't carry the counter semantic"
+    SYNTAX  Counter64
+
+percona		OBJECT IDENTIFIER ::= { mySQL 1 }
+
+CurrentTransactions OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb number of transactions at one time"
+    ::= { percona 8 }
+
+LockedTransactions OBJECT-TYPE
+    SYNTAX	Gauge32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Innodb number of locked transactions at one time"
+    ::= { percona 9 }
+
+FileReads OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB fread"
+    ::= { percona 19 }
+
+FileWrites OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB fwrite"
+    ::= { percona 20 }
+
+LogWrites OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB log writes"
+    ::= { percona 21 }
+
+SpinWaits OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Spin Waits"
+    ::= { percona 34 }
+
+SpinRounds OBJECT-TYPE
+    SYNTAX      Counter32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "InnoDB Spin Rounds"
+    ::= { percona 35 }
+
+OsWaits OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB OS Waits"
+    ::= { percona 36 }
+
+RowsInserted OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Inserted"
+    ::= { percona 37 }
+
+RowsUpdated OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Updated"
+    ::= { percona 38 }
+
+RowsDeleted OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Deleted"
+    ::= { percona 39 }
+
+RowsRead OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "InnoDB Rows Read"
+    ::= { percona 40 }
+
+TableLocksWaited OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Table Locks Waited"
+    ::= { percona 41 }
+
+TableLocksImmediate OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Table Locks Immediate"
+    ::= { percona 42 }
+
+SlowQueries OBJECT-TYPE
+    SYNTAX      Counter32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+    "Slow Queries"
+    ::= { percona 43 }
+
+AbortedClients OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Aborted Clients"
+    ::= { percona 50 }
+
+AbortedConnects OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Aborted Connects"
+    ::= { percona 51 }
+
+MaxUsedConnections OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Max Used Connections"
+    ::= { percona 52 }
+
+CurrentConnections OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of clients connected"
+    ::= { percona 60 }
+
+Questions OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of clients requests"
+    ::= { percona 75 }
+
+ComUpdate OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of update query"
+    ::= { percona 76 }
+
+ComInsert OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert queries"
+    ::= { percona 77 }
+
+ComSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select queries"
+    ::= { percona 78 }
+
+ComDelete OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of delete queries"
+    ::= { percona 79 }
+
+ComReplace OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of replace queries"
+    ::= { percona 80 }
+
+ComLoad OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of load queries"
+    ::= { percona 81 }
+
+ComUpdateMulti OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of update-multi queries"
+    ::= { percona 82 }
+
+ComInsertSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of insert...select queries"
+    ::= { percona 83 }
+
+ComDeleteMulti OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of delete-multi queries"
+    ::= { percona 84 }
+
+ComReplaceSelect OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of replace..select queries"
+    ::= { percona 85 }
+
+SelectFullJoin OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select full join queries"
+    ::= { percona 86 }
+
+SelectFullRangeJoin OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select full range queries"
+    ::= { percona 87 }
+
+SelectRange OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select range"
+    ::= { percona 88 }
+
+SelectRangeCheck OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select ranche check"
+    ::= { percona 89 }
+
+SelectScan OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of select scan"
+    ::= { percona 90 }
+
+SortMergePasses OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of passes for filesorts"
+    ::= { percona 91 }
+
+SortRange OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorts done by range"
+    ::= { percona 92 }
+
+SortRows OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorted rows"
+    ::= { percona 93 }
+
+SortScan OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of sorts done by table scan"
+    ::= { percona 94 }
+
+CreatedTmpTables OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp tables created"
+    ::= { percona 95 }
+
+CreatedTmpDiskTables OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp disk tables created"
+    ::= { percona 96 }
+
+CreatedTmpFiles OBJECT-TYPE
+    SYNTAX	Counter32
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of tmp files created"
+    ::= { percona 97 }
+
+BytesSent OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes sent"
+    ::= { percona 98 }
+
+BytesReceived OBJECT-TYPE
+    SYNTAX	Counter64
+    MAX-ACCESS	read-only
+    STATUS	current
+    DESCRIPTION
+    "Number of bytes received"
+    ::= { percona 99 }
+
+-- conformance information
+
+mySQLMIBConformance OBJECT IDENTIFIER ::= { mySQL 2 }
+
+mySQLMIBCompliances OBJECT IDENTIFIER ::= { mySQLMIBConformance 1 }
+mySQLMIBGroups      OBJECT IDENTIFIER ::= { mySQLMIBConformance 2 }
+
+-- compliance statements
+
+mySQLMIBCompliance MODULE-COMPLIANCE
+    STATUS  current
+    DESCRIPTION
+    "The compliance statement for SNMPv2 entities which implement MYSQL."
+    MODULE  -- this module
+    MANDATORY-GROUPS { mySQLGroup }
+    ::= { mySQLMIBCompliances 1 }
+
+-- units of conformance
+
+mySQLGroup OBJECT-GROUP
+    OBJECTS   { 
+			CurrentTransactions,
+			LockedTransactions,
+			FileReads,
+			FileWrites,
+			LogWrites,
+			SpinWaits,
+                        SpinRounds,
+			OsWaits,
+			RowsInserted,
+			RowsUpdated,
+			RowsDeleted,
+			RowsRead,
+			TableLocksWaited,
+			TableLocksImmediate,
+                        SlowQueries,
+			AbortedClients,
+			AbortedConnects,
+			MaxUsedConnections,
+			CurrentConnections,
+			Questions,
+			ComUpdate,
+			ComInsert,
+			ComSelect,
+			ComDelete,
+			ComReplace,
+			ComLoad,
+			ComUpdateMulti,
+			ComInsertSelect,
+			ComDeleteMulti,
+			ComReplaceSelect,
+			SelectFullJoin,
+			SelectFullRangeJoin,
+			SelectRange,
+			SelectRangeCheck,
+			SelectScan,
+			SortMergePasses,
+			SortRange,
+			SortRows,
+			SortScan,
+			CreatedTmpTables,
+			CreatedTmpDiskTables,
+			CreatedTmpFiles,
+			BytesSent,
+			BytesReceived
+}
+    STATUS    current
+    DESCRIPTION
+     "The group of objects providing for management of MYSQL entities."
+    ::= { mySQLMIBGroups 1 }
+
+
+END

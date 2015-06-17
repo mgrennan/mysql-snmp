@@ -1,5 +1,5 @@
 Name:           mysql-snmp
-Version:        1.3rc2
+Version:        1.3rc3
 Release:        1%{?dist}
 Summary:        SNMP monitoring agent for MySQL
 
@@ -54,6 +54,8 @@ install -m 644 PERCONA-SERVER-MIB.txt ${RPM_BUILD_ROOT}%{_datadir}/snmp/mibs
 %{_datadir}/snmp/mibs/*
 
 %changelog
+* Thu Apr 23 2015 Mark Grennan <mark@grennan.com> - 1.4rc3
+- fixed variable type problems
 * Wed Apr 15 2015 Mark Grennan <mark@grennan.com> - 1.3rc2
 - Percona release v1.3rc2
 * Tue Apr 14 2015 Mark Grennan <mark@grennan.com> - 1.3rc1
